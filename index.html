@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <title>-Battleship Earth Simulator-</title>
+	 <link rel="stylesheet" href="style/main.css" type="text/css" charset="utf-8">
+</head>
+<body>
+		<script>var $ = {};</script>
+		<canvas id="bg1"></canvas>
+		<canvas id="fg1"></canvas>
+		<canvas id="mg1"></canvas>
+		<canvas id="gui"></canvas>
+		<script src="js/bullet.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/buttons.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/elements.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/explosion.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/weapon.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/planet.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/Menus.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/particles.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/textParticle.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/gameSave.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/game.js" type="text/javascript" charset="utf-8"></script>
+		
+		<button id='earth-stats' style="position: absolute; left:430px; top:18px; display:none;" onclick="$.planetDisplay.show();">planet options</button>
+		<button id='weapon-stats' class='longerButton' style="position: absolute; left:15px; top:120px; display:none;" onclick="$.weaponDisplay.show();">your weapons</button>
+		<div id="weaponDisplay" class="weapon-box"><button class="close-tab weapon-name" onclick="$.weaponDisplay.hide();">X</button>
+		    <div class="info">
+		      <div class="weapon-name">Weapon Slot <div id="wSlot" class="sLine">1</div></div>
+		      <div class="weapon-details-titles">Damage: <div id="wDamage" class="sLine w-dets-numbers">100</div></div>
+		      <div class="weapon-details-titles">Health: <div id="wHealth" class="sLine w-dets-numbers">50</div></div>
+		      <div class="weapon-details-titles">Fire Rate: <div id="wFireRate" class="sLine w-dets-numbers">1s</div></div>
+		      <div class="weapon-details-titles">Accuracy: <div id="wAccuracy" class="sLine w-dets-numbers">10%</div></div>
+		      <div class="weapon-details-titles">Element: <div id="wElement" class="sLine w-dets-numbers">Water</div></div>
+		      <div class="weapon-details-titles">Element Cost: <div id="wEleCost" class="sLine w-dets-numbers">33</div></div>
+			    <button id="wReplace" class='longerButton' onclick="$.weaponDisplay.delete();">Replace</button>
+		    </div>
+		  <button id="wPrev" class="previous-tab weapon-name" onclick="$.weaponDisplay.ClickPrevNext(-1);">prev</button>
+		  <button id="wNext" class="next-tab weapon-name" onclick="$.weaponDisplay.ClickPrevNext(1);">next</button>
+		
+		</div>
+		<div id="planetDisplay" class="weapon-box"><button class="close-tab weapon-name" onclick="$.planetDisplay.hide();">X</button>
+		      <div class="info">
+		        <div class="weapon-name">Your Planet</div>
+		        <div class="weapon-details-titles">Total Weapon Slots: <div id="pSlots" class="sLine w-dets-numbers">5 </div></div>
+				<div class="weapon-details-titles">Open Weapon Slots: <div id="pOpenSlots" class="sLine w-dets-numbers">6 </div></div>
+				<div class="choiceTitle">Population Allocation</div>
+		        <div class="weapon-details-titles">health: <div id='healthpercent' class="sLine w-dets-numbers"></div><div id="pHealthRegen" class="sLine w-dets-numbers"><input type="range" onchange="$.planetDisplay.updatePercents(this);" id="health" value="90"></div></div>
+		        <div class="weapon-details-titles">Water: <div id='waterpercent' class="sLine w-dets-numbers"></div><div id="pWaterRegen" class="sLine w-dets-numbers"><input type="range" onchange="$.planetDisplay.updatePercents(this);" id="water" value="90"></div></div>
+		        <div class="weapon-details-titles">Fire: <div id='firepercent' class="sLine w-dets-numbers"></div><div id="pFireRegen" class="sLine w-dets-numbers"><input type="range" onchange="$.planetDisplay.updatePercents(this);" id="fire" value="90"></div></div>
+		        <div class="weapon-details-titles">Air: <div id='airpercent' class="sLine w-dets-numbers"></div><div id="pAirRegen" class="sLine w-dets-numbers"><input type="range" id="air" onchange="$.planetDisplay.updatePercents(this);" value="90"></div></div>
+		        <div class="w-dets-pop"><div id='populationpercent' class="sLine w-dets-pop"></div> of <div id="pPopulation" class="sLine w-dets-pop">3333</div> people allocated</div>
+		      <button onclick="$.saveGame();">save game</button><div id="savedMessage"></div>
+			  </div>
+		  </div>
+			
+			<div id="destinyDisplay">
+			    <div class="destinyinfo">
+			      <div class="weapon-name">Choose Their Destiny</div>
+			      <div class="destiny-details inLine"><p class="w-dets-numbers">Destroy<button onclick="$.destinyDisplay.destroyClick();">Choose</button></p>
+			        <div class="destinyTextHeight">
+			      Destroy your enemy, leaving behind a random weapon with 1 health for your arsenal. You will not know what weapon your enemy has left behind until it's in a weapon slot. If you have no open weapon slots, you will be asked to replace one of your current weapons.  Choose wisely or leave your new weapon behind.</div>
+			      </div>
+			       <div class="destiny-details inLine"><p class="w-dets-numbers">Peace<button onclick="$.destinyDisplay.peaceClick();">Choose</button></p>
+			         <div class="destinyTextHeight">
+			        Declare peace with your enemy. Leaving them alone to move on.  Doing so will allow some of their popluation to defect over to your planet.  The more people you have, the better your regeneration rates and ability to allocate people to different resources.</div>
+			      </div>
+			      <div class="destiny-details inLine"><p class="w-dets-numbers">Takeover<button onclick="$.destinyDisplay.takeoverClick();">Choose</button></p>
+			         <div class="destinyTextHeight">
+			        Leave your planet, weapons, and people behind. Nothing from your old planet will come along except yourself. You will takeover your enemies planet in it's entirety as your own.  Beware, you will only have half life to begin since you just decimated this new planet.
+			           </div>
+			      </div>
+			    </div>
+			  </div> 
+			  
+		<div id='issueMessage' class='weapon-box'> <div class="info weapon-details-titles">You have no open weapon slots.  Choose an existing weapon in your weapon menu to replace or exit the weapon menu to resume without replacing a weapon.</div></div>
+			  
+		<div id='Lose-message' class='menu-message'>Planet Destroyed<br><button class='bigger' onclick="location.reload();">Restart</button></div>
+		<div id='story'></div>		
+		<div id='main-menu' class='menu-message'>Battleship Earth<br>Simulator<br><button class='bigger' onclick="$.play_Click(false);">New Game</button><button id='resumeGame' class='bigger' onclick="$.play_Click(true);">Resume</button><div id="credits">Created By @Xanmia for JS13KGames 2004<br><br>Big thanks to Xanian7 for ideas<br>and Jack Rugile for code reference/inspiration</div></div>	
+</body>
+
+</html>
